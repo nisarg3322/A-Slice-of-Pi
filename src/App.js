@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import PieComponent from './Components/pieComponent'; // Make sure to use the correct path to your PieChart component
+import Header from './Components/header';
+import BarGraph from './Components/barGraphComponent';
+import MoneyMade from './Components/moneyMadeDisplay';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <>
+    <div style={{ backgroundColor: '#070045', color: 'white', minHeight: '100vh', padding: '20px'}}>
+
+      <Header />
+      <div style={{display:'flex',gap:'30px',justifyContent:'space-evenly', marginTop:'70px'}}>
+      <PieComponent  />
+      <div>
+      <BarGraph />
+
+      <MoneyMade/>
+      </div>
+      </div>
+      
     </div>
+    
+    </>
   );
 }
 
