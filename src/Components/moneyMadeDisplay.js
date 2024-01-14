@@ -34,8 +34,8 @@ const MoneyMade= () => {
 
     return(
         <>
-        <div style={{height:'100px', width:'500px', background:'gray', borderRadius:'15px', display:'flex', justifyContent:'center', alignItems:'center' ,marginTop:'30px' }}>
-            <h3>Total Money made in 2023: {totalMoney}</h3>
+        <div style={{height:'70px', width:'500px', background:'gray', borderRadius:'15px', display:'flex', justifyContent:'center', alignItems:'center' ,marginTop:'30px' }}>
+            <h2>Total Money made in 2023: ${totalMoney}</h2>
         </div>
         </>
     )

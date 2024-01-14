@@ -64,7 +64,7 @@ const PieComponent = () => {
   }, []);
 
   return (
-    <div style={{ width: "400px", height: "500px", border: "2px solid gray" }}>
+    <div style={{ width: "400px", height: "500px", border: "2px solid gray",borderRadius:'10px',boxShadow: "0 1px 8px rgba(255, 255, 255, 0.9)" }}>
       <div style={{ height: "400px", width: "400px" }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -87,7 +87,7 @@ const PieComponent = () => {
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <h4 style={{ textAlign: "center" }}>Reviews</h4>
+      <h3 style={{ textAlign: "center" }}>Customer reviews</h3>
     </div>
   );
 };

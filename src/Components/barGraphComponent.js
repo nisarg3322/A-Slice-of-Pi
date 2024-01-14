@@ -36,7 +36,7 @@ const BarGraph = () => {
 
             const orderTotals = calculateTotalOrders();
 
-            console.log(orderTotals)
+            
 
             const result = Object.entries(orderTotals).map(
                 ([store, count]) => ({
@@ -76,9 +76,9 @@ const BarGraph = () => {
             }}
             barSize={60}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid stroke="#ffffff" strokeDasharray="3 3" />
             <XAxis dataKey="name" tick={{ fill: 'white' }} />
-            <YAxis />
+            <YAxis tick={{ fill: 'white' }} />
             <Tooltip content={({ payload, label, active }) => {
                 if (active) {
                   return (
