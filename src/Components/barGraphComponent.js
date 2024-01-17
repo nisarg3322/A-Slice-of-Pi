@@ -11,12 +11,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const BarGraph = () => {
+const BarGraph = ({ startDate = null, endDate = null, data }) => {
   const [finalData, setFinalData] = useState([]);
   const [selectedPizzaType, setSelectedPizzaType] = useState("");
   const [selectedPizzaSize, setSelectedPizzaSize] = useState("");
   const [pizzaTypes, setPizzaTypes] = useState([]);
-  
 
   // fetching pizza types
   useEffect(() => {
@@ -26,9 +25,8 @@ const BarGraph = () => {
         const typesResponse = await fetch("/pricing_data.json");
         const dataSet = await typesResponse.json();
         const types = Object.keys(dataSet);
-        
+
         setPizzaTypes(types);
-        
       } catch (error) {
         console.error("Error fetching pizza types:", error);
       }
@@ -36,138 +34,107 @@ const BarGraph = () => {
     fetchPizzaTypes();
   }, []);
 
-  //fetching initial data
   useEffect(() => {
-
-    const fetchDataAndProcess = async () => {
-      try {
-        const response = await fetch("/order_data.json");
-        const data = await response.json();
-        
-        if(data.length > 0){
-            const calculateTotalOrders = () => {
-                const orderTotal = {};
-    
-                data.forEach((order) => {
-                  const { store } = order;
-                  orderTotal[store] = (orderTotal[store] || 0) + 1;
-                });
-    
-                return orderTotal;
-            };
-
-            const orderTotals = calculateTotalOrders();
-
-            const result = Object.entries(orderTotals).map(
-                ([store, count]) => ({
-                  name: store,
-                  orders: count,
-                })
-              );
-
-            setFinalData(result);
-
-        }
-
-    } catch (error) {
-        console.error("Error fetching or processing data:", error);
-        
-      }
+    const reRender = () => {
+      filterFinalData();
     };
 
-    fetchDataAndProcess();
-  }, []);
-
+    reRender();
+  }, [data, startDate, endDate]);
 
   // Filter the graph with selected pizza size and pizza type
-  const filterFinalData = async () =>{
-    
+  const filterFinalData = async () => {
     try {
-      const response = await fetch("/order_data.json");
-      const data = await response.json();
-      
-      if(data.length > 0){
-          const calculateTotalOrders = () => {
-              const orderTotal = {};
-  
-              data.forEach((order) => {
-                const { store,items } = order;
-                if(selectedPizzaSize == "" && selectedPizzaType == ""){
-                  orderTotal[store] = (orderTotal[store] || 0) + 1;
+      // const response = await fetch("/order_data.json");
+      // const data = await response.json();
 
-                }else{
-                  items.forEach((item) => {
-                    const{type,size} = item;
-                    if(selectedPizzaType == type && selectedPizzaSize == ""){
-                      orderTotal[store] = (orderTotal[store] || 0) + 1;
-                    }else if(selectedPizzaType == "" && selectedPizzaSize == size){
-                      orderTotal[store] = (orderTotal[store] || 0) + 1;
-                    }else if(selectedPizzaType == type && selectedPizzaSize == size){
-                      orderTotal[store] = (orderTotal[store] || 0) + 1;
-                    }
-                  })
-                }
-                
+      if (data && data.length > 0) {
+        const calculateTotalOrders = () => {
+          const orderTotal = {};
 
-              });
-  
-              return orderTotal;
-          };
+          data.forEach((order) => {
+            const orderDate = new Date(order.date);
+            if (
+              (!startDate && !endDate) ||
+              (startDate <= orderDate && orderDate <= endDate)
+            ) {
+              const { store, items } = order;
+              if (selectedPizzaSize == "" && selectedPizzaType == "") {
+                orderTotal[store] = (orderTotal[store] || 0) + 1;
+              } else {
+                items.forEach((item) => {
+                  const { type, size } = item;
+                  if (selectedPizzaType == type && selectedPizzaSize == "") {
+                    orderTotal[store] = (orderTotal[store] || 0) + 1;
+                  } else if (
+                    selectedPizzaType == "" &&
+                    selectedPizzaSize == size
+                  ) {
+                    orderTotal[store] = (orderTotal[store] || 0) + 1;
+                  } else if (
+                    selectedPizzaType == type &&
+                    selectedPizzaSize == size
+                  ) {
+                    orderTotal[store] = (orderTotal[store] || 0) + 1;
+                  }
+                });
+              }
+            }
+          });
 
-          const orderTotals = calculateTotalOrders();
+          return orderTotal;
+        };
 
-          const result = Object.entries(orderTotals).map(
-              ([store, count]) => ({
-                name: store,
-                orders: count,
-              })
-            );
+        const orderTotals = calculateTotalOrders();
 
-          setFinalData(result);
+        const result = Object.entries(orderTotals).map(([store, count]) => ({
+          name: store,
+          orders: count,
+        }));
 
+        setFinalData(result);
       }
-
-  } catch (error) {
+    } catch (error) {
       console.error("Error fetching or processing data:", error);
-      
     }
-  }
+  };
 
   return (
     <>
-
-      <div style={{height: '500px', width: '700px',marginBottom:'20px'}}>
-
-{/* form to filter graph using pizza type and size */}
-<div style={{display:'flex',gap:'30px',marginBottom:'20px'}}>
-      <div>
-          <label style={{ color: 'white' }}>Pizza Type:</label>
-          <select value={selectedPizzaType} onChange={(e) => setSelectedPizzaType(e.target.value)}>
-            <option value="">All</option>
-            {pizzaTypes.map((type, index) => (
-              <option key={index} value={type}>
-                {type}
-              </option>
-            ))}
-            
-          </select>
+      <div style={{ height: "500px", width: "700px", marginBottom: "20px" }}>
+        {/* form to filter graph using pizza type and size */}
+        <div style={{ display: "flex", gap: "30px", marginBottom: "20px" }}>
+          <div>
+            <label style={{ color: "white" }}>Pizza Type:</label>
+            <select
+              value={selectedPizzaType}
+              onChange={(e) => setSelectedPizzaType(e.target.value)}
+            >
+              <option value="">All</option>
+              {pizzaTypes.map((type, index) => (
+                <option key={index} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label style={{ color: "white" }}>Pizza Size:</label>
+            <select
+              value={selectedPizzaSize}
+              onChange={(e) => setSelectedPizzaSize(e.target.value)}
+            >
+              <option value="">All</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+            </select>
+          </div>
+          <button onClick={filterFinalData}>Filter</button>
         </div>
-        <div>
-          <label style={{ color: 'white' }}>Pizza Size:</label>
-          <select value={selectedPizzaSize} onChange={(e) => setSelectedPizzaSize(e.target.value)}>
-            <option value="">All</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            
-          </select>
-        </div>
-        <button onClick={filterFinalData}>Filter</button>
-        </div>
 
-
-{/* div for the graph */}
-      <ResponsiveContainer >
+        {/* div for the graph */}
+        <ResponsiveContainer>
           <BarChart
             width={500}
             height={300}
@@ -181,28 +148,28 @@ const BarGraph = () => {
             barSize={60}
           >
             <CartesianGrid stroke="#ffffff" strokeDasharray="3 3" />
-            <XAxis dataKey="name" tick={{ fill: 'white' }} />
-            <YAxis tick={{ fill: 'white' }} />
-            <Tooltip content={({ payload, label, active }) => {
-                if (active) {
-                  return (
-                    <div style={{ color: 'white', background: 'rgba(0, 0, 0, 0.8)', padding: '8px', borderRadius: '5px' }}>
-                      <p>{`Store: ${label}`}</p>
-                      <p>{`Orders: ${payload[0].value}`}</p>
-                    </div>
-                  );
-                }
-                return null;
-              }} />
+            <XAxis dataKey="name" tick={{ fill: "white" }} />
+            <YAxis tick={{ fill: "white" }} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#333",
+                border: "none",
+                color: "white",
+              }}
+              labelStyle={{ color: "white" }}
+              itemStyle={{ color: "white" }}
+            />
             <Legend />
-            <Bar dataKey="orders" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="blue" />} />
-            
+            <Bar
+              dataKey="orders"
+              fill="#82ca9d"
+              activeBar={<Rectangle fill="gold" stroke="blue" />}
+            />
           </BarChart>
         </ResponsiveContainer>
-        </div>
+      </div>
     </>
   );
 };
 
 export default BarGraph;
-  

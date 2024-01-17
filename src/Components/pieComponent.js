@@ -8,7 +8,7 @@ import {
   PieChart,
 } from "recharts";
 
-const PieComponent = () => {
+const PieComponent = ({ startDate = null, endDate = null, data }) => {
   const [finalData, setFinalData] = useState([]);
 
   useEffect(() => {
@@ -22,9 +22,15 @@ const PieComponent = () => {
             const sentimentTotals = {};
 
             data.forEach((review) => {
-              const { sentiment } = review;
-              sentimentTotals[sentiment] =
-                (sentimentTotals[sentiment] || 0) + 1;
+              const orderDate = new Date(review.date);
+              if (
+                (!startDate && !endDate) ||
+                (startDate <= orderDate && orderDate <= endDate)
+              ) {
+                const { sentiment } = review;
+                sentimentTotals[sentiment] =
+                  (sentimentTotals[sentiment] || 0) + 1;
+              }
             });
 
             return sentimentTotals;
@@ -61,10 +67,18 @@ const PieComponent = () => {
     };
 
     fetchDataAndProcess();
-  }, []);
+  }, [data, startDate, endDate]);
 
   return (
-    <div style={{ width: "400px", height: "500px", border: "2px solid gray",borderRadius:'10px',boxShadow: "0 1px 8px rgba(255, 255, 255, 0.9)" }}>
+    <div
+      style={{
+        width: "400px",
+        height: "500px",
+        border: "2px solid gray",
+        borderRadius: "10px",
+        boxShadow: "0 1px 8px rgba(255, 255, 255, 0.9)",
+      }}
+    >
       <div style={{ height: "400px", width: "400px" }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

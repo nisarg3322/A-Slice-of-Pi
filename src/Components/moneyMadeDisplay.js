@@ -10,7 +10,7 @@ const MoneyMade= () => {
                 const orders = await orderResponce.json();
                 const priceResponce = await fetch("/pricing_data.json");
                 const prices = await priceResponce.json();
-                console.log(orders,prices)
+               
 
 
                 let total = 0;

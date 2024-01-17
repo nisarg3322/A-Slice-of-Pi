@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PieComponent from "./Components/pieComponent"; // Make sure to use the correct path to your PieChart component
 import Header from "./Components/header";
 import BarGraph from "./Components/barGraphComponent";
 import MoneyMade from "./Components/moneyMadeDisplay";
 import LineGraph from "./Components/lineGraph";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const App = () => {
+  const [startDate, setStartDate] = useState(new Date("2023-01-02"));
+  const handleStartDateChange = (date) => setStartDate(date);
+
+  const [endDate, setEndDate] = useState(new Date("2023-12-31"));
+  const handleEndDateChange = (date) => setEndDate(date);
+
+  const [data, setData] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/order_data.json");
+        setData(await response.json());
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <div
@@ -17,6 +40,20 @@ const App = () => {
         }}
       >
         <Header />
+        <div>
+          <p>Start date:</p>
+          <DatePicker
+            selected={startDate}
+            onChange={handleStartDateChange}
+            dateFormat="yyyy-MM-dd" // adjust the date format as needed
+          />
+          <p>end date:</p>
+          <DatePicker
+            selected={endDate}
+            onChange={handleEndDateChange}
+            dateFormat="yyyy-MM-dd" // adjust the date format as needed
+          />
+        </div>
         <div
           style={{
             display: "flex",
@@ -25,13 +62,20 @@ const App = () => {
             marginTop: "70px",
           }}
         >
-          <PieComponent />
-          <div style={{flexDirection: "column",
-              display: "flex",justifyContent: "center",alignItems: "center",boxShadow: "0 1px 8px rgba(255, 255, 255, 0.9)",
+          <PieComponent startDate={startDate} endDate={endDate} data={data} />
+          <div
+            style={{
+              flexDirection: "column",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              boxShadow: "0 1px 8px rgba(255, 255, 255, 0.9)",
               borderRadius: "10px",
               padding: "20px",
-              color: "white"}}>
-            <BarGraph />
+              color: "white",
+            }}
+          >
+            <BarGraph startDate={startDate} endDate={endDate} data={data} />
 
             <MoneyMade />
           </div>
@@ -55,7 +99,7 @@ const App = () => {
               color: "white",
             }}
           >
-            <LineGraph />
+            <LineGraph startDate={startDate} endDate={endDate} data={data} />
             <h3>Sales data for year 2023</h3>
           </div>
         </div>
