@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import PieComponent from "./Components/pieComponent"; // Make sure to use the correct path to your PieChart component
-import Header from "./Components/header";
-import BarGraph from "./Components/barGraphComponent";
-import MoneyMade from "./Components/moneyMadeDisplay";
-import LineGraph from "./Components/lineGraph";
+import PieComponent from "./Components/PieComponent"; // Make sure to use the correct path to your PieChart component
+import Header from "./Components/Header";
+import BarGraph from "./Components/BarGraphComponent";
+import MoneyMade from "./Components/MoneyMadeDisplay";
+import LineGraph from "./Components/LineGraph";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import("./Styles/App.css");
 
 const App = () => {
   const [startDate, setStartDate] = useState(new Date("2023-01-02"));
@@ -31,76 +32,46 @@ const App = () => {
 
   return (
     <>
-      <div
-        style={{
-          backgroundColor: "#070045",
-          color: "white",
-          minHeight: "100vh",
-          padding: "20px",
-        }}
-      >
+      <div className="App">
         <Header />
-        <div>
-          <p>Start date:</p>
-          <DatePicker
-            selected={startDate}
-            onChange={handleStartDateChange}
-            dateFormat="yyyy-MM-dd" // adjust the date format as needed
-          />
-          <p>end date:</p>
-          <DatePicker
-            selected={endDate}
-            onChange={handleEndDateChange}
-            dateFormat="yyyy-MM-dd" // adjust the date format as needed
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            gap: "30px",
-            justifyContent: "space-evenly",
-            marginTop: "70px",
-          }}
-        >
-          <PieComponent startDate={startDate} endDate={endDate} data={data} />
-          <div
-            style={{
-              flexDirection: "column",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              boxShadow: "0 1px 8px rgba(255, 255, 255, 0.9)",
-              borderRadius: "10px",
-              padding: "20px",
-              color: "white",
-            }}
-          >
-            <BarGraph startDate={startDate} endDate={endDate} data={data} />
 
+        <div>
+          <div className="date-picker-container flex justify-evenly ">
             <MoneyMade />
+
+            <div className="date-picker bg-white p-6 rounded-lg shadow-md border border-gray-300 flex flex-col lg:flex-row items-start lg:items-center hover:shadow-lg hover:shadow-teal-500 transition duration-300 ease-in-out">
+              <div className="mb-2 lg:mr-4">
+                <p>Start date:</p>
+                <DatePicker
+                  className="border p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                  selected={startDate}
+                  onChange={handleStartDateChange}
+                  dateFormat="yyyy-MM-dd"
+                />
+              </div>
+              <div className="mt-4 lg:mt-0">
+                <p>End date:</p>
+                <DatePicker
+                  className="border p-2 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                  selected={endDate}
+                  onChange={handleEndDateChange}
+                  dateFormat="yyyy-MM-dd"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
+        <div className="flex  justify-evenly mt-10">
+          <PieComponent startDate={startDate} endDate={endDate} data={data} />
+
+          <BarGraph startDate={startDate} endDate={endDate} data={data} />
+        </div>
+
         {/* for Sales data graph for 2023 */}
-        <div
-          style={{ width: "100%", display: "flex", justifyContent: "center" }}
-        >
-          <div
-            style={{
-              width: "1200px",
-              flexDirection: "column",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: "30px",
-              boxShadow: "0 0px 8px rgba(255, 255, 255, 1)",
-              borderRadius: "10px",
-              padding: "20px",
-              color: "white",
-            }}
-          >
+        <div className="line-chart-section  mb-20">
+          <div className="line-chart w-full flex flex-col items-center justify-center mt-10">
             <LineGraph startDate={startDate} endDate={endDate} data={data} />
-            <h3>Sales data for year 2023</h3>
           </div>
         </div>
       </div>

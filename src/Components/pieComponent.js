@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-  PieChart,
-} from "recharts";
+
+import Chart from "react-apexcharts";
 
 const PieComponent = ({ startDate = null, endDate = null, data }) => {
   const [finalData, setFinalData] = useState([]);
@@ -37,29 +31,9 @@ const PieComponent = ({ startDate = null, endDate = null, data }) => {
           };
 
           const sentimentTotals = calculateSentimentTotals();
+          console.log(Object.keys(sentimentTotals));
 
-          const result = Object.entries(sentimentTotals).map(
-            ([sentiment, count]) => ({
-              name: sentiment,
-              value: count,
-            })
-          );
-
-          const colorPalette = [
-            "#FF6B6B",
-            "#6BFF6B",
-            "#6B6BFF",
-            "#FFD166",
-            "#45A29E",
-            "#DAA520",
-          ];
-
-          const formattedData = result.map((item, index) => ({
-            ...item,
-            color: colorPalette[index % colorPalette.length],
-          }));
-
-          setFinalData(formattedData);
+          setFinalData(sentimentTotals);
         }
       } catch (error) {
         console.error("Error fetching or processing data:", error);
@@ -69,40 +43,72 @@ const PieComponent = ({ startDate = null, endDate = null, data }) => {
     fetchDataAndProcess();
   }, [data, startDate, endDate]);
 
+  const chartOptions = {
+    labels: Object.keys(finalData),
+    options: {
+      chart: {
+        animations: {
+          enabled: true,
+          easing: "easeinout",
+          speed: 800,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200,
+            },
+            legend: {
+              position: "bottom",
+            },
+          },
+        },
+      ],
+      legend: {
+        position: "right",
+        offsetY: 0,
+        height: 230,
+      },
+    },
+  };
+
+  const chartSeries = Object.values(finalData); // Replace with your data
+
   return (
     <div
-      style={{
-        width: "400px",
-        height: "500px",
-        border: "2px solid gray",
-        borderRadius: "10px",
-        boxShadow: "0 1px 8px rgba(255, 255, 255, 0.9)",
-      }}
+      className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-center hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out "
+      style={{ height: "100%" }}
     >
-      <div style={{ height: "400px", width: "400px" }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={finalData}
-              dataKey="value"
-              cx="50%"
-              cy="50%"
-              outerRadius={150}
-              label
-              animationBegin={0}
-              animationDuration={800}
-            >
-              {finalData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+      <div style={{ minWidth: "550px" }}>
+        {/* Your pie chart code goes here */}
+        <Chart
+          options={{
+            ...chartOptions.options,
+            labels: chartOptions.labels,
+          }}
+          series={chartSeries}
+          type="pie"
+          width="100%"
+        />
       </div>
-      <h3 style={{ textAlign: "center" }}>Customer reviews</h3>
+
+      <div className="text-center text-lg font-bold">Review</div>
     </div>
+
+    // <div>
+    //   <Chart
+    //     options={{
+    //       ...chartOptions.options,
+    //       labels: chartOptions.labels, // Set labels here
+    //     }}
+    //     series={chartSeries}
+    //     type="pie"
+    //     width="500px"
+    //   />
+    //   <h2>Reviews</h2>
+    // </div>
   );
 };
 

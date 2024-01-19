@@ -1,4 +1,4 @@
-import React, { PureComponent, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -34,20 +34,9 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
     fetchPizzaTypes();
   }, []);
 
-  useEffect(() => {
-    const reRender = () => {
-      filterFinalData();
-    };
-
-    reRender();
-  }, [data, startDate, endDate]);
-
   // Filter the graph with selected pizza size and pizza type
-  const filterFinalData = async () => {
+  const filterFinalData = useCallback(async () => {
     try {
-      // const response = await fetch("/order_data.json");
-      // const data = await response.json();
-
       if (data && data.length > 0) {
         const calculateTotalOrders = () => {
           const orderTotal = {};
@@ -59,21 +48,21 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
               (startDate <= orderDate && orderDate <= endDate)
             ) {
               const { store, items } = order;
-              if (selectedPizzaSize == "" && selectedPizzaType == "") {
+              if (selectedPizzaSize === "" && selectedPizzaType === "") {
                 orderTotal[store] = (orderTotal[store] || 0) + 1;
               } else {
                 items.forEach((item) => {
                   const { type, size } = item;
-                  if (selectedPizzaType == type && selectedPizzaSize == "") {
+                  if (selectedPizzaType === type && selectedPizzaSize === "") {
                     orderTotal[store] = (orderTotal[store] || 0) + 1;
                   } else if (
-                    selectedPizzaType == "" &&
-                    selectedPizzaSize == size
+                    selectedPizzaType === "" &&
+                    selectedPizzaSize === size
                   ) {
                     orderTotal[store] = (orderTotal[store] || 0) + 1;
                   } else if (
-                    selectedPizzaType == type &&
-                    selectedPizzaSize == size
+                    selectedPizzaType === type &&
+                    selectedPizzaSize === size
                   ) {
                     orderTotal[store] = (orderTotal[store] || 0) + 1;
                   }
@@ -97,18 +86,27 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
     } catch (error) {
       console.error("Error fetching or processing data:", error);
     }
-  };
+  }, [data, startDate, endDate, selectedPizzaSize, selectedPizzaType]);
+
+  useEffect(() => {
+    filterFinalData();
+  }, [filterFinalData]);
 
   return (
     <>
-      <div style={{ height: "500px", width: "700px", marginBottom: "20px" }}>
+      <div
+        className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-center hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out "
+        style={{ height: "500px", width: "600px", marginBottom: "20px" }}
+      >
         {/* form to filter graph using pizza type and size */}
-        <div style={{ display: "flex", gap: "30px", marginBottom: "20px" }}>
-          <div>
-            <label style={{ color: "white" }}>Pizza Type:</label>
+
+        <div className="flex gap-8 mb-4 justify-center">
+          <div className="flex items-center">
+            <label className="mb-1 mr-2">Pizza Type:</label>
             <select
               value={selectedPizzaType}
               onChange={(e) => setSelectedPizzaType(e.target.value)}
+              className="p-2 border border-gray-300 rounded"
             >
               <option value="">All</option>
               {pizzaTypes.map((type, index) => (
@@ -118,11 +116,13 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
               ))}
             </select>
           </div>
-          <div>
-            <label style={{ color: "white" }}>Pizza Size:</label>
+
+          <div className="flex items-center">
+            <label className="mb-1 mr-2">Pizza Size:</label>
             <select
               value={selectedPizzaSize}
               onChange={(e) => setSelectedPizzaSize(e.target.value)}
+              className="p-2 border border-gray-300 rounded"
             >
               <option value="">All</option>
               <option value="S">S</option>
@@ -130,7 +130,6 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
               <option value="L">L</option>
             </select>
           </div>
-          <button onClick={filterFinalData}>Filter</button>
         </div>
 
         {/* div for the graph */}
@@ -145,14 +144,15 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
               left: 20,
               bottom: 5,
             }}
-            barSize={60}
+            barSize={45}
           >
-            <CartesianGrid stroke="#ffffff" strokeDasharray="3 3" />
-            <XAxis dataKey="name" tick={{ fill: "white" }} />
-            <YAxis tick={{ fill: "white" }} />
+            <CartesianGrid stroke="black" strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
             <Tooltip
               contentStyle={{
                 backgroundColor: "#333",
+                borderRadius: "10px",
                 border: "none",
                 color: "white",
               }}
@@ -162,8 +162,8 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
             <Legend />
             <Bar
               dataKey="orders"
-              fill="#82ca9d"
-              activeBar={<Rectangle fill="gold" stroke="blue" />}
+              fill="#008ffb"
+              activeBar={<Rectangle fill="#00588e" stroke="blue" />}
             />
           </BarChart>
         </ResponsiveContainer>

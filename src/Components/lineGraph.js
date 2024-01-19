@@ -68,7 +68,10 @@ const LineGraph = ({ startDate = null, endDate = null, data }) => {
 
   return (
     <>
-      <div style={{ height: "500px", width: "1200px" }}>
+      <div
+        className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-center  hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out "
+        style={{ height: "600px", width: "1200px" }}
+      >
         <ResponsiveContainer>
           <LineChart
             width={500}
@@ -81,9 +84,9 @@ const LineGraph = ({ startDate = null, endDate = null, data }) => {
               bottom: 5,
             }}
           >
-            <CartesianGrid stroke="#ffffff" strokeDasharray="3 3" />
-            <XAxis dataKey="name" tick={{ fill: "white" }} />
-            <YAxis tick={{ fill: "white" }} />
+            <CartesianGrid stroke="black" strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
             <Tooltip
               content={({ payload, label, active }) => {
                 if (active) {
@@ -108,13 +111,16 @@ const LineGraph = ({ startDate = null, endDate = null, data }) => {
             <Line
               type="monotone"
               dataKey="sales"
-              stroke="#82ca9d"
+              stroke="#008ffb"
               strokeWidth={3}
               activeDot={{ r: 10 }}
             />
             {/* <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
           </LineChart>
         </ResponsiveContainer>
+        <label className="text-center text-black font-bold text-lg">
+          Sales data for year 2023
+        </label>
       </div>
     </>
   );
