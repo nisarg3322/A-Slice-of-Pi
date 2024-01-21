@@ -2,6 +2,8 @@
 
 A Slice of Pi - This web application functions as a dashboard for viewing statistics related to a pizza store business.
 
+## Deployed at : [Link to Website](https://resplendent-jelly-a47002.netlify.app/)
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -31,7 +33,7 @@ npm start
 - [React.js](https://react.dev/) for design.
 - [Tailwind CSS](https://tailwindcss.com/) for styling.
 - [Chart.js](https://www.chartjs.org/) for charts.
-- [Cloudflare Pages](https://pages.cloudflare.com/) for deployment.
+- [Netlify](https://app.netlify.com/) for deployment.
 
 ## Goals Achieved
 
