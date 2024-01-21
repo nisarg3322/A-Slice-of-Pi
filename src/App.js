@@ -7,14 +7,14 @@
 import React, { useEffect, useState } from "react";
 
 //Component imports
-import PieComponent from "./Components/PieComponent";
-import Header from "./Components/Header";
-import BarGraph from "./Components/BarGraphComponent";
-import MoneyMade from "./Components/MoneyMadeDisplay";
-import LineGraph from "./Components/LineGraph";
-import DatePickerTop from "./Components/DatePickerTop";
-import TopPerformer from "./Components/TopPerformer";
-import ReviewBox from "./Components/ReviewBox";
+import PieComponent from "./components/PieComponent";
+import Header from "./components/Header";
+import BarGraph from "./components/BarGraphComponent";
+import MoneyMade from "./components/MoneyMadeDisplay";
+import LineGraph from "./components/LineGraph";
+import DatePickerTop from "./components/DatePickerTop";
+import TopPerformer from "./components/TopPerformer";
+import ReviewBox from "./components/ReviewBox";
 
 //react element and library imports
 import "react-datepicker/dist/react-datepicker.css";
