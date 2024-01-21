@@ -1,6 +1,15 @@
+/**
+ * Author: Nisarg Patel
+ * Project: uOttawa Outreach Technical Interview Project
+ * Description: This file contains the implementation of container box to contain all review block
+ */
+
+//imports for reviewBlock component
 import ReviewBlock from "./ReviewBlock";
 import { useEffect, useState } from "react";
-import { fetchPizzaTypes, fetchStores } from "../Utils/Utils";
+
+//import for Util method to get array of stores
+import { fetchStores } from "../Utils/Utils";
 
 const ReviewBox = ({ reviewData }) => {
   const [formattedData, setFormattedData] = useState([]);
@@ -11,7 +20,7 @@ const ReviewBox = ({ reviewData }) => {
 
   const [storeType, setStoreType] = useState([]);
 
-  //getting pizza types
+  //getting store types
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,10 +36,12 @@ const ReviewBox = ({ reviewData }) => {
     fetchData();
   }, []);
 
-  //setting formated data to targeted data
+  //filtering reviews based on selected store and sentiment
   useEffect(() => {
     const formateData = () => {
       const filteredReview = [];
+
+      //checking if reviewData is fetched
       if (reviewData && Array.isArray(reviewData)) {
         reviewData.forEach((review) => {
           if (selectedSentiment === "" && selectedStore === "") {
@@ -71,6 +82,7 @@ const ReviewBox = ({ reviewData }) => {
 
         <div className="flex justify-end w-full">
           <div className="flex items-center mr-3">
+            {/* for dropdown of stores */}
             <label className="mb-1 mr-2 font-bold font-sans text-slate-700">
               Store:
             </label>
@@ -87,6 +99,8 @@ const ReviewBox = ({ reviewData }) => {
               ))}
             </select>
           </div>
+
+          {/* for dropdown of sentiments */}
           <div className="flex items-center">
             <label className="mb-1 mr-2 font-bold font-sans text-slate-700">
               Sentiment:
@@ -112,11 +126,10 @@ const ReviewBox = ({ reviewData }) => {
             </select>
           </div>
         </div>
-
-        {/* for dropdown of stores */}
       </div>
 
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-4 p-4 grid-cols-1">
+      {/* review box that contains all the reviews */}
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4 p-4 grid-cols-1 ">
         {formattedData.map((review, index) => {
           return <ReviewBlock key={index} reviewData={review} />;
         })}

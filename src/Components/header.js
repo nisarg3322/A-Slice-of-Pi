@@ -1,3 +1,9 @@
+/**
+ * Author: Nisarg Patel
+ * Project: uOttawa Outreach Technical Interview Project
+ * Description: This file contains the implementation of Header
+ */
+
 import React from "react";
 
 const header = () => {

@@ -1,3 +1,9 @@
+/**
+ * Author: Nisarg Patel
+ * Project: uOttawa Outreach Technical Interview Project
+ * Description: This file contains the implementation of table that dispays top performers
+ */
+
 import { useEffect, useState } from "react";
 
 const TopPerformer = ({ orderData, reviewData, priceData }) => {
@@ -117,7 +123,7 @@ const TopPerformer = ({ orderData, reviewData, priceData }) => {
               {getReviewName()}
             </td>
             <td className="border border-gray-300 px-4 py-2">
-              {reviewStore ? reviewStore[0][1] : ""} ⭐
+              {reviewStore ? reviewStore[0][1] : ""} (5⭐)
             </td>
           </tr>
         </tbody>

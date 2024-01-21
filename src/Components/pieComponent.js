@@ -1,32 +1,21 @@
-import React, { useEffect, useState } from "react";
+/**
+ * Author: Nisarg Patel
+ * Project: uOttawa Outreach Technical Interview Project
+ * Description: This file contains the implementation of pie chart to show reviews sorted by sentiments
+ */
 
+import React, { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 
 const PieComponent = ({ startDate = null, endDate = null, reviewData }) => {
   const [finalData, setFinalData] = useState([]);
 
   useEffect(() => {
+    //get final data for the pie chart
     const fetchDataAndProcess = () => {
       try {
         if (reviewData) {
-          const calculateSentimentTotals = () => {
-            const sentimentTotals = {};
-
-            reviewData.forEach((review) => {
-              const orderDate = new Date(review.date);
-              if (
-                (!startDate && !endDate) ||
-                (startDate <= orderDate && orderDate <= endDate)
-              ) {
-                const { sentiment } = review;
-                sentimentTotals[sentiment] =
-                  (sentimentTotals[sentiment] || 0) + 1;
-              }
-            });
-
-            return sentimentTotals;
-          };
-
+          //get a array of object with type[{sentiment:total}]
           const sentimentTotals = calculateSentimentTotals();
 
           setFinalData(sentimentTotals);
@@ -38,6 +27,24 @@ const PieComponent = ({ startDate = null, endDate = null, reviewData }) => {
 
     fetchDataAndProcess();
   }, [startDate, endDate, reviewData]);
+
+  //calculate total review count for each sentiment
+  const calculateSentimentTotals = () => {
+    const sentimentTotals = {};
+
+    reviewData.forEach((review) => {
+      const orderDate = new Date(review.date);
+      if (
+        (!startDate && !endDate) ||
+        (startDate <= orderDate && orderDate <= endDate)
+      ) {
+        const { sentiment } = review;
+        sentimentTotals[sentiment] = (sentimentTotals[sentiment] || 0) + 1;
+      }
+    });
+
+    return sentimentTotals;
+  };
 
   return (
     <div className="bg-white p-3 rounded-lg shadow-lg hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out lg:col-span-2 w-full h-full grid place-items-center  ">

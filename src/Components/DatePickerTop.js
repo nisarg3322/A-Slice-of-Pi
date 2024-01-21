@@ -1,3 +1,9 @@
+/**
+ * Author: Nisarg Patel
+ * Project: uOttawa Outreach Technical Interview Project
+ * Description: This file contains the implementation of date picker
+ */
+
 import DatePicker from "react-datepicker";
 
 const DatePickerTop = ({

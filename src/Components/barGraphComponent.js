@@ -1,19 +1,30 @@
+/**
+ * Author: Nisarg Patel
+ * Project: uOttawa Outreach Technical Interview Project
+ * Description: This file contains the implementation of Bar graph for orders sold by each store
+ */
+
 import React, { useCallback, useEffect, useState } from "react";
-import { Chart, ArcElement } from "chart.js/auto";
+
+//chart.js import
 import { Bar } from "react-chartjs-2";
 
+/*
+ * @param {startDate, endDate, orderData (object)}
+ * @returns Bar graph Component
+ */
 const BarGraph = ({ startDate = null, endDate = null, orderData }) => {
-  //finalData filtered
+  // Filtered finalData for graph
   const [finalData, setFinalData] = useState([]);
 
   //pizza selections
   const [selectedPizzaType, setSelectedPizzaType] = useState("");
   const [selectedPizzaSize, setSelectedPizzaSize] = useState("");
 
-  //used to populate pizza types dynamically form database
+  //variable to store list of pizza types fetched from database
   const [pizzaTypes, setPizzaTypes] = useState([]);
 
-  // fetching pizza types
+  // fetching pizza types from database
   useEffect(() => {
     // Fetch pizza types from the JSON file
     const fetchPizzaTypes = async () => {
@@ -33,20 +44,30 @@ const BarGraph = ({ startDate = null, endDate = null, orderData }) => {
   // Filter the graph with selected pizza size and pizza type
   const filterFinalData = useCallback(async () => {
     try {
+      //checking if orderData is fetched or !isNull
       if (orderData && orderData.length > 0) {
+        //callback function to generate a array of object for orders per store
         const calculateTotalOrders = () => {
+          //variable to store the returning array
           const orderTotal = {};
 
+          //loop to process each order
           orderData.forEach((order) => {
             const orderDate = new Date(order.date);
+
+            //checking if the order is between the selected dates
             if (
               (!startDate && !endDate) ||
               (startDate <= orderDate && orderDate <= endDate)
             ) {
+              //destructure store name and [] of items from each order
               const { store, items } = order;
+
+              //checking if "ALL" is selected and displaying all orders
               if (selectedPizzaSize === "" && selectedPizzaType === "") {
                 orderTotal[store] = (orderTotal[store] || 0) + 1;
               } else {
+                //processing the order based on selected pizza type and size
                 items.forEach((item) => {
                   const { type, size } = item;
                   if (selectedPizzaType === type && selectedPizzaSize === "") {
@@ -67,11 +88,13 @@ const BarGraph = ({ startDate = null, endDate = null, orderData }) => {
             }
           });
 
+          //returning final list of orders
           return orderTotal;
         };
 
         const orderTotals = calculateTotalOrders();
 
+        //creating a json object to store store and order count
         const result = Object.entries(orderTotals).map(([store, count]) => ({
           name: store,
           orders: count,
@@ -128,6 +151,7 @@ const BarGraph = ({ startDate = null, endDate = null, orderData }) => {
           </div>
         </div>
 
+        {/* bar graph section */}
         <Bar
           options={{
             scales: {

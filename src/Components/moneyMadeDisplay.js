@@ -1,14 +1,23 @@
+/**
+ * Author: Nisarg Patel
+ * Project: uOttawa Outreach Technical Interview Project
+ * Description: This file contains the implementation of display to show total revenue
+ */
+
 import React, { useEffect, useState } from "react";
 
+//component for money Made display
 const MoneyMade = ({ orderData, priceData }) => {
   const [totalMoney, setTotalMoney] = useState([]);
 
+  //calculate revenue once files are fetched
   useEffect(() => {
     const calculateTotal = async () => {
       try {
         if (orderData && priceData) {
           let total = 0;
 
+          //loop to calculate each order revenue and adding that to total
           orderData.forEach((order) => {
             const { items } = order;
             items.forEach((item) => {

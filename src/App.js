@@ -1,3 +1,9 @@
+/**
+ * Author: Nisarg Patel
+ * Project: uOttawa Outreach Technical Interview Project
+ * Description: This file contains the implementation of Dashboard that displays statistics of a pizza store (A Slice of Pi)
+ */
+
 import React, { useEffect, useState } from "react";
 
 //Component imports
@@ -11,7 +17,6 @@ import TopPerformer from "./Components/TopPerformer";
 import ReviewBox from "./Components/ReviewBox";
 
 //react element and library imports
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import("./Styles/App.css");
 
@@ -23,11 +28,12 @@ const App = () => {
   const [endDate, setEndDate] = useState(new Date("2023-12-31"));
   const handleEndDateChange = (date) => setEndDate(date);
 
-  //data for storing orderdata fetched from database
+  //Variables for storing all type of data fetched from database
   const [orderData, setOrderData] = useState();
   const [reviewData, setReviewData] = useState();
   const [priceData, setPriceData] = useState();
 
+  //fetching data at initial load
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,10 +56,11 @@ const App = () => {
       <Header />
       <div className="grid place-items-center">
         <div className=" w-full max-w-7xl h-full ">
+          {/* parent grid element for the body section of the page aa component goes in this grid */}
           <div className="grid grid-cols-1 place-items-center m-4 gap-4  lg:grid-cols-5">
+            {/* first row with moneyMade display and date range picker */}
             <div className="flex flex-col items-center  gap-4 justify-center lg:flex-row  lg:col-span-5">
               <div className=" w-full h-auto lg:h-24 lg:col-span-1  ">
-                {/* flex flex-col items-center justify-center w-full md:flex-row */}
                 <MoneyMade orderData={orderData} priceData={priceData} />
               </div>
               <div className="w-full h-auto lg:h-24  lg:col-span-1  ">
@@ -66,12 +73,14 @@ const App = () => {
               </div>
             </div>
 
+            {/* pie chart */}
             <PieComponent
               startDate={startDate}
               endDate={endDate}
               reviewData={reviewData}
             />
 
+            {/* barchart */}
             <div className="w-full h-full  lg:col-span-3">
               <BarGraph
                 startDate={startDate}
@@ -80,6 +89,7 @@ const App = () => {
               />
             </div>
 
+            {/* LineChart */}
             <div className="w-full h-full max-h-96 lg:col-span-3">
               <LineGraph
                 startDate={startDate}
@@ -89,6 +99,7 @@ const App = () => {
               />
             </div>
 
+            {/* table for top performer */}
             <div className="w-full h-full max-h-96 bg-white rounded-lg p-4 shadow-lg hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out lg:col-span-2  ">
               <TopPerformer
                 orderData={orderData}
@@ -96,13 +107,14 @@ const App = () => {
                 priceData={priceData}
               />
             </div>
+
+            {/* Grid display for list of reviews */}
             <div className="w-full h-full bg-white rounded-lg p-4 shadow-lg hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out lg:col-span-5 ">
               <ReviewBox reviewData={reviewData} />
             </div>
           </div>
         </div>
       </div>
-      {/* for Sales data graph for 2023 */}
     </>
   );
 };
