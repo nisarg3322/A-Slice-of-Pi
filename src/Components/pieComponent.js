@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-import Chart from "react-apexcharts";
+import { Pie } from "react-chartjs-2";
 
-const PieComponent = ({ startDate = null, endDate = null, data }) => {
+const PieComponent = ({ startDate = null, endDate = null, reviewData }) => {
   const [finalData, setFinalData] = useState([]);
 
   useEffect(() => {
-    const fetchDataAndProcess = async () => {
+    const fetchDataAndProcess = () => {
       try {
-        const response = await fetch("/review_data.json");
-        const data = await response.json();
-
-        if (data.length > 0) {
+        if (reviewData) {
           const calculateSentimentTotals = () => {
             const sentimentTotals = {};
 
-            data.forEach((review) => {
+            reviewData.forEach((review) => {
               const orderDate = new Date(review.date);
               if (
                 (!startDate && !endDate) ||
@@ -31,7 +28,6 @@ const PieComponent = ({ startDate = null, endDate = null, data }) => {
           };
 
           const sentimentTotals = calculateSentimentTotals();
-          console.log(Object.keys(sentimentTotals));
 
           setFinalData(sentimentTotals);
         }
@@ -41,74 +37,43 @@ const PieComponent = ({ startDate = null, endDate = null, data }) => {
     };
 
     fetchDataAndProcess();
-  }, [data, startDate, endDate]);
-
-  const chartOptions = {
-    labels: Object.keys(finalData),
-    options: {
-      chart: {
-        animations: {
-          enabled: true,
-          easing: "easeinout",
-          speed: 800,
-        },
-      },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              position: "bottom",
-            },
-          },
-        },
-      ],
-      legend: {
-        position: "right",
-        offsetY: 0,
-        height: 230,
-      },
-    },
-  };
-
-  const chartSeries = Object.values(finalData); // Replace with your data
+  }, [startDate, endDate, reviewData]);
 
   return (
-    <div
-      className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-center hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out "
-      style={{ height: "100%" }}
-    >
-      <div style={{ minWidth: "550px" }}>
-        {/* Your pie chart code goes here */}
-        <Chart
-          options={{
-            ...chartOptions.options,
-            labels: chartOptions.labels,
-          }}
-          series={chartSeries}
-          type="pie"
-          width="100%"
-        />
-      </div>
-
-      <div className="text-center text-lg font-bold">Review</div>
+    <div className="bg-white p-3 rounded-lg shadow-lg hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out lg:col-span-2 w-full h-full grid place-items-center  ">
+      <Pie
+        options={{
+          plugins: {
+            title: {
+              text: "User reviews",
+              display: true,
+              font: { size: 25 },
+            },
+          },
+          animation: {
+            animateRotate: true,
+            animateScale: true,
+          },
+        }}
+        data={{
+          labels: Object.keys(finalData),
+          datasets: [
+            {
+              borderRadius: 8,
+              data: Object.values(finalData),
+              backgroundColor: [
+                "rgba(255, 99, 132)",
+                "rgba(75, 192, 192)",
+                "rgba(54, 162, 235)",
+                "rgba(255, 159, 64 )",
+              ],
+              borderWidth: 1,
+              hoverOffset: 20,
+            },
+          ],
+        }}
+      ></Pie>
     </div>
-
-    // <div>
-    //   <Chart
-    //     options={{
-    //       ...chartOptions.options,
-    //       labels: chartOptions.labels, // Set labels here
-    //     }}
-    //     series={chartSeries}
-    //     type="pie"
-    //     width="500px"
-    //   />
-    //   <h2>Reviews</h2>
-    // </div>
   );
 };
 

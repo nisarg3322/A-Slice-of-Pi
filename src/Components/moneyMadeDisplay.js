@@ -1,41 +1,40 @@
 import React, { useEffect, useState } from "react";
 
-const MoneyMade = () => {
+const MoneyMade = ({ orderData, priceData }) => {
   const [totalMoney, setTotalMoney] = useState([]);
 
   useEffect(() => {
     const calculateTotal = async () => {
       try {
-        const orderResponce = await fetch("/order_data.json");
-        const orders = await orderResponce.json();
-        const priceResponce = await fetch("/pricing_data.json");
-        const prices = await priceResponce.json();
+        if (orderData && priceData) {
+          let total = 0;
 
-        let total = 0;
-
-        orders.forEach((order) => {
-          const { items } = order;
-          items.forEach((item) => {
-            const { type, size } = item;
-            total += prices[type][size];
+          orderData.forEach((order) => {
+            const { items } = order;
+            items.forEach((item) => {
+              const { type, size } = item;
+              total += priceData[type][size];
+            });
           });
-        });
 
-        setTotalMoney(total);
+          setTotalMoney(total);
+        }
       } catch (error) {
         console.error("Error while fatching data", error);
       }
     };
     calculateTotal();
-  }, []);
+  }, [orderData, priceData]);
 
   return (
     <>
-      <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 hover:shadow-lg hover:shadow-teal-500 transition duration-300 ease-in-out">
+      <div className="bg-white pr-4 pl-4 md:h-full rounded-lg shadow-md flex items-center space-x-4 hover:shadow-lg hover:shadow-teal-500 transition duration-300 ease-in-out">
         <img src="/bag.png" alt="Shopping Bag" className="w-12 h-12" />
         <div>
-          <h2 className=" text-xl font-semibold">Total Money made in 2023:</h2>
-          <p className="text-2xl font-bold">${totalMoney}</p>
+          <h2 className=" text-xl font-semibold inline font-sans text-slate-700">
+            Total Revenue
+          </h2>
+          <p className="text-2xl  font-bold text-green-500 ">${totalMoney}</p>
         </div>
       </div>
     </>

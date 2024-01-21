@@ -1,20 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  Rectangle,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { Chart, ArcElement } from "chart.js/auto";
+import { Bar } from "react-chartjs-2";
 
-const BarGraph = ({ startDate = null, endDate = null, data }) => {
+const BarGraph = ({ startDate = null, endDate = null, orderData }) => {
+  //finalData filtered
   const [finalData, setFinalData] = useState([]);
+
+  //pizza selections
   const [selectedPizzaType, setSelectedPizzaType] = useState("");
   const [selectedPizzaSize, setSelectedPizzaSize] = useState("");
+
+  //used to populate pizza types dynamically form database
   const [pizzaTypes, setPizzaTypes] = useState([]);
 
   // fetching pizza types
@@ -37,11 +33,11 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
   // Filter the graph with selected pizza size and pizza type
   const filterFinalData = useCallback(async () => {
     try {
-      if (data && data.length > 0) {
+      if (orderData && orderData.length > 0) {
         const calculateTotalOrders = () => {
           const orderTotal = {};
 
-          data.forEach((order) => {
+          orderData.forEach((order) => {
             const orderDate = new Date(order.date);
             if (
               (!startDate && !endDate) ||
@@ -86,7 +82,7 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
     } catch (error) {
       console.error("Error fetching or processing data:", error);
     }
-  }, [data, startDate, endDate, selectedPizzaSize, selectedPizzaType]);
+  }, [orderData, startDate, endDate, selectedPizzaSize, selectedPizzaType]);
 
   useEffect(() => {
     filterFinalData();
@@ -94,15 +90,13 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
 
   return (
     <>
-      <div
-        className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-center hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out "
-        style={{ height: "500px", width: "600px", marginBottom: "20px" }}
-      >
+      <div className="bg-white rounded-lg p-4 shadow-lg flex flex-col justify-center hover:shadow-lg hover:shadow-yellow-500 transition duration-300 ease-in-out h-96 lg:h-full  w-full ">
         {/* form to filter graph using pizza type and size */}
-
-        <div className="flex gap-8 mb-4 justify-center">
+        <div className="flex gap-8 mb-4  justify-center">
           <div className="flex items-center">
-            <label className="mb-1 mr-2">Pizza Type:</label>
+            <label className="mb-1 mr-2 font-bold font-sans text-slate-700">
+              Pizza Type:
+            </label>
             <select
               value={selectedPizzaType}
               onChange={(e) => setSelectedPizzaType(e.target.value)}
@@ -118,7 +112,9 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
           </div>
 
           <div className="flex items-center">
-            <label className="mb-1 mr-2">Pizza Size:</label>
+            <label className="mb-1 mr-2 font-bold font-sans text-slate-700">
+              <p>Pizza Size:</p>
+            </label>
             <select
               value={selectedPizzaSize}
               onChange={(e) => setSelectedPizzaSize(e.target.value)}
@@ -132,41 +128,53 @@ const BarGraph = ({ startDate = null, endDate = null, data }) => {
           </div>
         </div>
 
-        {/* div for the graph */}
-        <ResponsiveContainer>
-          <BarChart
-            width={500}
-            height={300}
-            data={finalData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-            barSize={45}
-          >
-            <CartesianGrid stroke="black" strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#333",
-                borderRadius: "10px",
-                border: "none",
-                color: "white",
-              }}
-              labelStyle={{ color: "white" }}
-              itemStyle={{ color: "white" }}
-            />
-            <Legend />
-            <Bar
-              dataKey="orders"
-              fill="#008ffb"
-              activeBar={<Rectangle fill="#00588e" stroke="blue" />}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        <Bar
+          options={{
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: "Orders",
+                  font: {
+                    weight: "bold", // Bold y-axis text
+                  },
+                },
+              },
+            },
+            plugins: {
+              title: {
+                text: "No. of Order by stores",
+                display: true,
+                font: { size: 25 },
+              },
+              legend: {
+                display: false,
+              },
+            },
+          }}
+          data={{
+            labels: finalData.map((entry) => entry.name),
+
+            datasets: [
+              {
+                borderRadius: 10,
+                barThickness: 60,
+                data: finalData.map((entry) => entry.orders),
+
+                backgroundColor: [
+                  "rgba(255, 99, 132)",
+                  "rgba(255, 159, 64 )",
+                  "rgba(255, 205, 86)",
+                  "rgba(75, 192, 192)",
+                  "rgba(54, 162, 235)",
+                  "rgba(153, 102, 255)",
+                  "rgba(201, 203, 207)",
+                ],
+                borderWidth: 2,
+              },
+            ],
+          }}
+        ></Bar>
       </div>
     </>
   );
