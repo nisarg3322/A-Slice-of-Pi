@@ -19,7 +19,7 @@ A Slice of Pi - This web application functions as a dashboard for viewing statis
 git clone https://github.com/nisarg3322/A-Slice-of-Pi.git
 
 # Navigate to the project folder
-cd a-slice-of-pi-dashboard
+cd A-Slice-of-Pi
 
 # Install dependencies
 npm install
