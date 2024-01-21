@@ -25,7 +25,7 @@ cd A-Slice-of-Pi
 npm install
 
 # Run the development server
-npm start
+npm run dev
 ```
 
 ## Technologies Used
