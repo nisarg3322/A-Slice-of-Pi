@@ -18,7 +18,7 @@ import ReviewBox from "./Components/ReviewBox";
 
 //react element and library imports
 import "react-datepicker/dist/react-datepicker.css";
-import("./Styles/App.css");
+import("./App.css");
 
 const App = () => {
   //state property for the whole app Start date and end date.
